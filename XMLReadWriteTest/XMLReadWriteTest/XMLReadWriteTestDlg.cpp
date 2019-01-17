@@ -106,51 +106,6 @@ BOOL CXMLReadWriteTestDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	
-
-	////读取一个XML;
-
-	//::CoInitialize(NULL);
-	//MSXML2::IXMLDOMDocumentPtr XMLDOC;
-	//MSXML2::IXMLDOMElementPtr XMLROOT;
-	//MSXML2::IXMLDOMElementPtr XMLELEMENT;
-	//MSXML2::IXMLDOMNodeListPtr XMLNODES; //某个节点的所以字节点  
-	//MSXML2::IXMLDOMNamedNodeMapPtr XMLNODEATTS;//某个节点的所有属性;  
-	//MSXML2::IXMLDOMNodePtr XMLNODE;
-	//HRESULT HR = XMLDOC.CreateInstance(_uuidof(MSXML2::DOMDocument60));
-	//if (!SUCCEEDED(HR))
-	//{
-	//	MessageBox(_T("faild!!"));
-	//	return 0;
-	//}
-	//XMLDOC->load("XMLTEST.XML");
-	//XMLROOT = XMLDOC->GetdocumentElement();//获得根节点;  
-	//XMLROOT->get_childNodes(&XMLNODES);//获得根节点的所有子节点;  
-	//long XMLNODESNUM, ATTSNUM;
-	//XMLNODES->get_length(&XMLNODESNUM);//获得所有子节点的个数;  
-	//CString TMP;
-	//TMP.Format(_T("%d"), XMLNODESNUM);
-	//MessageBox(TMP);
-	//for (int I = 0; I<XMLNODESNUM; I++)
-	//{
-	//	XMLNODES->get_item(I, &XMLNODE);//获得某个子节点;  
-	//	XMLNODE->get_attributes(&XMLNODEATTS);//获得某个节点的所有属性;  
-	//	XMLNODEATTS->get_length(&ATTSNUM);//获得所有属性的个数;  
-	//	for (int J = 0; J<ATTSNUM; J++)
-	//	{
-	//		XMLNODEATTS->get_item(J, &XMLNODE);//获得某个属性;  
-	//		CString T1 = (char*)(_bstr_t)XMLNODE->nodeName;
-	//		CString T2 = (char*)(_bstr_t)XMLNODE->text;
-	//		MessageBox(T1 + " = " + T2);
-	//	}
-	//	MessageBox((_bstr_t)XMLNODE->nodeName+": "+(_bstr_t)XMLNODE->text);  
-	//}
-	//return 0;
-	////XMLDOC->save("XMLTEST.XML");  
-	//XMLNODES.Release();
-	//XMLNODE.Release();
-	//XMLROOT.Release();
-	//XMLDOC.Release();
-	//::CoUninitialize();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -242,5 +197,46 @@ void CXMLReadWriteTestDlg::OnBnClickedCreatxml()
 
 void CXMLReadWriteTestDlg::OnBnClickedReadxml()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	//读取一个XML;
+
+	::CoInitialize(NULL);
+	MSXML2::IXMLDOMDocumentPtr XMLDOC;
+	MSXML2::IXMLDOMElementPtr XMLROOT;
+	MSXML2::IXMLDOMElementPtr XMLELEMENT;
+	MSXML2::IXMLDOMNodeListPtr XMLNODES; //某个节点的所以字节点  
+	MSXML2::IXMLDOMNamedNodeMapPtr XMLNODEATTS;//某个节点的所有属性;  
+	MSXML2::IXMLDOMNodePtr XMLNODE;
+	HRESULT HR = XMLDOC.CreateInstance(_uuidof(MSXML2::DOMDocument30));
+	if (!SUCCEEDED(HR))
+	{
+		MessageBox(_T("faild!!"));
+	}
+	XMLDOC->load("XMLTEST.XML");
+	XMLROOT = XMLDOC->GetdocumentElement();//获得根节点;  
+	XMLROOT->get_childNodes(&XMLNODES);//获得根节点的所有子节点;  
+	long XMLNODESNUM, ATTSNUM;
+	XMLNODES->get_length(&XMLNODESNUM);//获得所有子节点的个数;  
+	CString TMP;
+	TMP.Format(_T("%d"), XMLNODESNUM);
+	MessageBox(TMP);
+	for (int I = 0; I<XMLNODESNUM; I++)
+	{
+		XMLNODES->get_item(I, &XMLNODE);//获得某个子节点;  
+		XMLNODE->get_attributes(&XMLNODEATTS);//获得某个节点的所有属性;  
+		XMLNODEATTS->get_length(&ATTSNUM);//获得所有属性的个数;  
+		for (int J = 0; J<ATTSNUM; J++)
+		{
+			XMLNODEATTS->get_item(J, &XMLNODE);//获得某个属性;  
+			CString T1 = (_bstr_t)XMLNODE->nodeName;
+			CString T2 = (_bstr_t)XMLNODE->text;
+			MessageBox(T1 + " = " + T2);
+		}
+		MessageBox((_bstr_t)XMLNODE->nodeName+": "+(_bstr_t)XMLNODE->text);  
+	}
+	//XMLDOC->save("XMLTEST.XML");  
+	XMLNODES.Release();
+	XMLNODE.Release();
+	XMLROOT.Release();
+	XMLDOC.Release();
+	::CoUninitialize();
 }
