@@ -2,10 +2,14 @@
 // XMLReadWriteTestDlg.cpp : 实现文件
 //
 
+ 
 #include "stdafx.h"
 #include "XMLReadWriteTest.h"
 #include "XMLReadWriteTestDlg.h"
 #include "afxdialogex.h"
+#import <msxml3.dll>
+
+using namespace MSXML2;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -64,6 +68,8 @@ BEGIN_MESSAGE_MAP(CXMLReadWriteTestDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_CREATXML, &CXMLReadWriteTestDlg::OnBnClickedCreatxml)
+	ON_BN_CLICKED(IDC_READXML, &CXMLReadWriteTestDlg::OnBnClickedReadxml)
 END_MESSAGE_MAP()
 
 
@@ -99,7 +105,52 @@ BOOL CXMLReadWriteTestDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	
 
+	////读取一个XML;
+
+	//::CoInitialize(NULL);
+	//MSXML2::IXMLDOMDocumentPtr XMLDOC;
+	//MSXML2::IXMLDOMElementPtr XMLROOT;
+	//MSXML2::IXMLDOMElementPtr XMLELEMENT;
+	//MSXML2::IXMLDOMNodeListPtr XMLNODES; //某个节点的所以字节点  
+	//MSXML2::IXMLDOMNamedNodeMapPtr XMLNODEATTS;//某个节点的所有属性;  
+	//MSXML2::IXMLDOMNodePtr XMLNODE;
+	//HRESULT HR = XMLDOC.CreateInstance(_uuidof(MSXML2::DOMDocument60));
+	//if (!SUCCEEDED(HR))
+	//{
+	//	MessageBox(_T("faild!!"));
+	//	return 0;
+	//}
+	//XMLDOC->load("XMLTEST.XML");
+	//XMLROOT = XMLDOC->GetdocumentElement();//获得根节点;  
+	//XMLROOT->get_childNodes(&XMLNODES);//获得根节点的所有子节点;  
+	//long XMLNODESNUM, ATTSNUM;
+	//XMLNODES->get_length(&XMLNODESNUM);//获得所有子节点的个数;  
+	//CString TMP;
+	//TMP.Format(_T("%d"), XMLNODESNUM);
+	//MessageBox(TMP);
+	//for (int I = 0; I<XMLNODESNUM; I++)
+	//{
+	//	XMLNODES->get_item(I, &XMLNODE);//获得某个子节点;  
+	//	XMLNODE->get_attributes(&XMLNODEATTS);//获得某个节点的所有属性;  
+	//	XMLNODEATTS->get_length(&ATTSNUM);//获得所有属性的个数;  
+	//	for (int J = 0; J<ATTSNUM; J++)
+	//	{
+	//		XMLNODEATTS->get_item(J, &XMLNODE);//获得某个属性;  
+	//		CString T1 = (char*)(_bstr_t)XMLNODE->nodeName;
+	//		CString T2 = (char*)(_bstr_t)XMLNODE->text;
+	//		MessageBox(T1 + " = " + T2);
+	//	}
+	//	MessageBox((_bstr_t)XMLNODE->nodeName+": "+(_bstr_t)XMLNODE->text);  
+	//}
+	//return 0;
+	////XMLDOC->save("XMLTEST.XML");  
+	//XMLNODES.Release();
+	//XMLNODE.Release();
+	//XMLROOT.Release();
+	//XMLDOC.Release();
+	//::CoUninitialize();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -152,3 +203,44 @@ HCURSOR CXMLReadWriteTestDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CXMLReadWriteTestDlg::OnBnClickedCreatxml()
+{
+	//创建一个XML文件;
+	::CoInitialize(NULL);
+	MSXML2::IXMLDOMDocumentPtr XMLDOC;
+	MSXML2::IXMLDOMElementPtr XMLROOT;
+
+	HRESULT HR = XMLDOC.CreateInstance(_uuidof(MSXML2::DOMDocument30));
+	if (!SUCCEEDED(HR))
+	{
+		MessageBox(_T("faild!!"));
+		return;
+	}
+	XMLROOT = XMLDOC->createElement("ROOT");
+	XMLROOT->setAttribute("ID", "12345");  //设置根标签的属性; 
+	XMLDOC->appendChild(XMLROOT);
+
+	CString TMP;
+	MSXML2::IXMLDOMElementPtr XMLNODE;
+	for (int I = 0; I<10; I++)
+	{
+		TMP.Format(_T("%d"), I);
+		XMLNODE = XMLDOC->createElement((_bstr_t)(_T("NODE") + TMP));
+		XMLNODE->put_text((_bstr_t)"NODETEXTS");//设置标签的文本内容;  
+		XMLNODE->setAttribute("ID", (_variant_t)TMP);//设置标签的属性及内容;  
+		XMLNODE->setAttribute("NAME", "NODENAME");
+		XMLROOT->appendChild(XMLNODE);
+	}
+	XMLDOC->save("XMLTEST.XML");
+	XMLNODE.Release();
+	XMLROOT.Release();
+	XMLDOC.Release();
+	::CoUninitialize();
+	MessageBox(_T("创建XML成功！"));
+}
+
+
+void CXMLReadWriteTestDlg::OnBnClickedReadxml()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
